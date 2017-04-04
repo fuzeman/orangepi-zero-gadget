@@ -1,0 +1,52 @@
+name: orangepi-zero-gadget
+summary: Support files for booting the Orange Pi Zero
+version: 1.0.0-alpha.1
+type: gadget
+
+description: |
+  Support files for booting the Orange Pi Zero.
+
+  Included in this snap is U-Boot (v2017.03) with the sunxi spl, initial
+  environment and boot script.
+
+architectures: [armhf]
+confinement: strict
+grade: devel
+
+parts:
+    uboot:
+        plugin: fm-uboot
+
+        source: git://git.denx.de/u-boot.git
+        source-depth: 1
+        source-tag: v2017.03
+        source-type: git
+
+        fm-uboot-board: orangepi_zero
+        fm-uboot-image: u-boot-sunxi-with-spl.bin
+
+        prepare: |
+          touch .scmversion
+
+    environment:
+        plugin: fm-nil
+        source: .
+
+        build: mkenvimage -r -s 131072 -o uboot.conf uboot.env.in
+        install: cp uboot.conf $SNAPCRAFT_PART_INSTALL/uboot.conf
+
+        stage:
+          - uboot.conf
+
+    script:
+        plugin: fm-nil
+        source: .
+
+        build: mkimage -C none -A arm -T script -d boot.cmd boot.scr
+        install: cp boot.scr $SNAPCRAFT_PART_INSTALL/boot.scr
+
+        organize:
+            boot.scr: boot-assets/boot.scr
+
+        stage:
+          - boot-assets/boot.scr
