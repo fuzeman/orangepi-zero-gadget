@@ -1,4 +1,4 @@
-device-tree: sun8i-h3-nanopi-neo.dtb
+device-tree: sun8i-h2-plus-orangepi-zero.dtb
 device-tree-origin: kernel
 
 volumes:
