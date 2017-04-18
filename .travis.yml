@@ -1,0 +1,16 @@
+language: generic
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker run -v $(pwd):$(pwd) -t ubuntu:yakkety sh -c "
+      apt-get update -qq &&
+      apt-get install -qq -y python2.7 snapcraft &&
+
+      (ln -s /usr/bin/python2.7 /usr/bin/python2 || true)
+
+      cd $(pwd) &&
+      snapcraft snap --target-arch armhf
+    "
