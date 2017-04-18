@@ -22,6 +22,11 @@ parts:
         source-tag: v2017.03
         source-type: git
 
+        build-packages:
+          - device-tree-compiler
+          - libc6-dev
+          - python2.7
+
         fm-uboot-board: orangepi_zero
         fm-uboot-image: u-boot-sunxi-with-spl.bin
 
@@ -33,6 +38,8 @@ parts:
         source: .
 
         build: mkenvimage -r -s 131072 -o uboot.conf uboot.env.in
+        build-packages: [u-boot-tools]
+
         install: cp uboot.conf $SNAPCRAFT_PART_INSTALL/uboot.conf
 
         stage:
@@ -43,6 +50,8 @@ parts:
         source: .
 
         build: mkimage -C none -A arm -T script -d boot.cmd boot.scr
+        build-packages: [u-boot-tools]
+
         install: cp boot.scr $SNAPCRAFT_PART_INSTALL/boot.scr
 
         organize:
