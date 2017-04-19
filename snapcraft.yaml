@@ -1,6 +1,6 @@
 name: orangepi-zero-gadget
 summary: Support files for booting the Orange Pi Zero
-version: 1.0.0-beta.2
+version: 1.0.0-beta.3
 type: gadget
 
 description: |
