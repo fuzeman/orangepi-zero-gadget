@@ -1,16 +1,32 @@
 language: generic
 sudo: required
-
 services:
-  - docker
-
+- docker
 script:
-  - docker run -v $(pwd):$(pwd) -t ubuntu:yakkety sh -c "
-      apt-get update -qq &&
-      apt-get install -qq -y python2.7 snapcraft &&
-
-      (ln -s /usr/bin/python2.7 /usr/bin/python2 || true)
-
-      cd $(pwd) &&
-      snapcraft snap --target-arch armhf
-    "
+- docker run -v $(pwd):$(pwd) -t ubuntu:yakkety sh -c "cd $(pwd) && .travis/build.sh armhf"
+before_deploy:
+- .travis/decrypt.sh
+deploy:
+- provider: releases
+  skip_cleanup: true
+  file: "*.snap"
+  file_glob: true
+  api_key:
+    secure: t1PU/LAeC8aiw/HujlHk1CaRhJJydzrsgYT1dUuBp5Igc1HYJGZhwqIR2evmNpVQu75Yc/UvaUl0JfQBhdcKb1MA9MfpdakBSUUp3SEcXtHL3+/ZNPoGlaKBFxAleLHAAp4cye6fQSijd8Y/lNgivrXgDj6fDWCXNKhn53smTCOC/EwEq7CIYbSp43hv/yHefKfs04O+xSInrkUCCSndaxZOR5ZEQQMBcTSu4WksvQJIZks5IMsgAM3DKFRjtyY+3P09L+JpeqCbzN3Uu/HRzWoFE9D8ZeCxV4IP3GOaJQw5MxIGN/W6iofdH12dZcTXB8bH3vRLMZwU1nkKpEixkCikyte+bFNoB7lVTjHw+CLQ4Xz6pTnFKX4XnhxkhSUq1OD8cBC15RZNS5HcEQFPuXG6JICgZfpTnExN87jOiKxSjGqjHZWledyOm0rB+fFJfZLI9yV/dTpdfuNdvqY9IneyZ1gYGFvjpVIscN8yEkAC5WyDvSEffppC/kPuK2mMzsvxk48I5vQhlqdliQzVFzQGqJlTAkWIhHE/5OlJhqq/MaeAAXps/9wEny+MLLXF6aWzLFwCwRf9urwP3gxSWVE7SWIv6JVT/rO+HF0+7jK0NUPB2lXqCRso7dShdUl3ZQ2CzT6rnfY42vTqibNjKp44dqCWuhfQSgyjIi+Uyxw=
+  on:
+    repo: fuzeman/orangepi-zero-gadget
+    tags: true
+- provider: script
+  skip_cleanup: true
+  script:
+  - docker run -v $(pwd):$(pwd) -t ubuntu:yakkety sh -c "cd $(pwd) && .travis/push.sh $TRAVIS_TAG"
+  on:
+    repo: fuzeman/orangepi-zero-gadget
+    tags: true
+#- provider: script
+#  skip_cleanup: true
+#  script:
+#  - docker run -v $(pwd):$(pwd) -t ubuntu:yakkety sh -c "cd $(pwd) && .travis/push.sh"
+#  on:
+#    repo: fuzeman/orangepi-zero-gadget
+#    branch: master
