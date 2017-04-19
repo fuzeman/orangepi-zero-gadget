@@ -10,7 +10,7 @@ description: |
   environment and boot script.
 
 architectures: [armhf]
-confinement: strict
+confinement: devmode
 grade: devel
 
 parts:
